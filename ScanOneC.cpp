@@ -429,6 +429,20 @@ bool ScanOneC::CallAsFunc(const long lMethodNum,
             break;
         }
 
+        case eScanImage:
+        {
+            // парам 1 - what is 1 - pdf, 2 - jpg
+            tVariant& pParam0 = paParams[0];
+            int format = pParam0.intVal;
+
+            bool isOk = ScanImage(format);
+
+            TV_VT(pvarRetValue) = VTYPE_BOOL;
+            pvarRetValue->bVal = isOk;
+
+            break;
+        }
+
         default:
             return false;
     }

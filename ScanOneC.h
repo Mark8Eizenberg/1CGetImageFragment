@@ -29,7 +29,7 @@ public:
     {
         eVersion = 0,       // Версия Компоненты
         eGetImageFragment,  // ПолучитьФрагментИзображения
-        eScanImage,
+        eScanImage,         //СканироватьДокумент
         eMethLast           // Always last
     };
 
