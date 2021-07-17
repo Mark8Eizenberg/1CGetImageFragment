@@ -1,6 +1,9 @@
 
 #include "stdafx.h"
 
+//tdwain
+#include "dtwain.h"
+
 
 #ifdef __linux__
 #include <unistd.h>
@@ -35,12 +38,14 @@ static wchar_t *g_PropNamesRu[] = { L"" };
 
 static wchar_t *g_MethodNamesRu[] = {
                                         L"Версия",
-                                        L"ПолучитьФрагментИзображения"
+                                        L"ПолучитьФрагментИзображения",
+                                        L"СканироватьДокумент"
                                     };
                                         
 static wchar_t *g_MethodNames[] =   {
                                         L"Version", 
-                                        L"ScanOneC"
+                                        L"GetImage",
+                                        L"ScanDoc"
                                     };
 
 
@@ -777,3 +782,48 @@ bool ScanOneC::GetImageFragment(wchar_t* sourcePath, wchar_t* resultPath, int fr
 
     return true;
 }
+
+//Initialize TWAIN componenet and open source
+DTWAIN_SOURCE GetSource()
+{
+    if (!DTWAIN_SysInitialize()) {
+        throw new std::exception("Cannot initialize TWAIN on pc");
+        return NULL;
+    }
+    else
+    {
+        return DTWAIN_SelectSource();
+    }
+}
+
+bool ScanOneC::ScanImage(unsigned short format)
+{
+    DTWAIN_SOURCE scannerSource = GetSource();
+    if (scannerSource)
+    {
+        switch (format)
+        {
+        case 1:
+            DTWAIN_AcquireFile(scannerSource, NULL, DTWAIN_PDF,
+                DTWAIN_USENATIVE + DTWAIN_USEPROMPT,
+                DTWAIN_PT_DEFAULT, DTWAIN_ACQUIREALL, TRUE, TRUE, NULL);
+            break;
+        case 2:
+            DTWAIN_AcquireFile(scannerSource, NULL, DTWAIN_JPEG,
+                DTWAIN_USENATIVE + DTWAIN_USEPROMPT,
+                DTWAIN_PT_DEFAULT, DTWAIN_ACQUIREALL, TRUE, TRUE, NULL);
+            break;
+        default:
+            throw new std::exception("Wrong format parameter: 1 - pdf, 2 - jpeg");
+            return false;
+            break;
+        }
+        return true;
+    }
+    else
+    {
+        throw new std::exception("ERROR::Cannot load source");
+        return false;
+    }
+}
+

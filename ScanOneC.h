@@ -29,7 +29,7 @@ public:
     {
         eVersion = 0,       // Версия Компоненты
         eGetImageFragment,  // ПолучитьФрагментИзображения
-        
+        eScanImage,
         eMethLast           // Always last
     };
 
@@ -74,6 +74,9 @@ private:
 
 	bool GetImageFragment(wchar_t* sourcePath, wchar_t* resultPath, int fragmentPos, 
         int left, int top, int width, int height);
+
+    bool ScanOneC::ScanImage(unsigned short format);
+
 
     // Attributes
     IAddInDefBase      *m_iConnect;
